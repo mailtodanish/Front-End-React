@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import './LoginForm.css';
-import {API_BASE_URL} from '../../Constant/apiConstants';
+import {API_BASE_URL, ACCESS_TOKEN_NAME} from '../../Constant/apiConstants';
 import { withRouter } from "react-router-dom";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 function LoginForm(props) {
     const [state , setState] = useState({
@@ -24,6 +25,19 @@ function LoginForm(props) {
             "email":state.email,
             "password":state.password,
         }
+        axios.post(API_BASE_URL+'/auth/login', payload)
+            .then(function (response) {
+                if(!('error' in response.data)){
+                    NotificationManager.success("Login sucessfull.", 'info');
+                    localStorage.setItem(ACCESS_TOKEN_NAME,response.data.access_token);
+                    redirectToHome();                   
+                } else{
+                    NotificationManager.warning(response.data['error'], 'info');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            }); 
        
     }
     const redirectToHome = () => {
@@ -74,6 +88,7 @@ function LoginForm(props) {
                 <span>Dont have an account? </span>
                 <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
             </div>
+            <NotificationContainer/>
         </div>
     )
 }

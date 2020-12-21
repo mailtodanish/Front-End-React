@@ -8,6 +8,9 @@ import {
 } from "react-router-dom";
 import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
 import LoginForm from './Components/LoginForm/LoginForm';
+import Home from './Components/Home/Home';
+import Logout from './Components/LoginForm/Logout';
+import PrivateRoute from './Components/ProtectedRouter/PrivateRoute';
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -28,6 +31,12 @@ function App() {
             <Route path="/login">
               <LoginForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
+            
+            <PrivateRoute path="/upload_files" component={Home} />
+          
+            <Route path="/logout">
+              <Logout/>
+              </Route>
            
           </Switch>
          </div>
