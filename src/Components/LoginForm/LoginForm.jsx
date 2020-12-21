@@ -24,27 +24,7 @@ function LoginForm(props) {
             "email":state.email,
             "password":state.password,
         }
-        axios.post(API_BASE_URL+'/user/login', payload)
-            .then(function (response) {
-                if(response.status === 200){
-                    setState(prevState => ({
-                        ...prevState,
-                        'successMessage' : 'Login successful. Redirecting to home page..'
-                    }))
-                    localStorage.setItem(ACCESS_TOKEN_NAME,response.data.token);
-                    redirectToHome();
-                    props.showError(null)
-                }
-                else if(response.code === 204){
-                    props.showError("Username and password do not match");
-                }
-                else{
-                    props.showError("Username does not exists");
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+       
     }
     const redirectToHome = () => {
         props.updateTitle('Home')

@@ -7,7 +7,7 @@ import {
   Route
 } from "react-router-dom";
 import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
-import LoginForm from './Components/RegistrationForm/LoginForm/LoginForm';
+import LoginForm from './Components/LoginForm/LoginForm';
 
 function App() {
   const [title, updateTitle] = useState(null);
@@ -20,6 +20,9 @@ function App() {
           <Switch>
             <Route path="/" exact={true}>
               
+              <RegistrationForm showError={updateErrorMessage} updateTitle={updateTitle}/>
+            </Route>
+            <Route path="/register" exact={true}>              
               <RegistrationForm showError={updateErrorMessage} updateTitle={updateTitle}/>
             </Route>
             <Route path="/login">
