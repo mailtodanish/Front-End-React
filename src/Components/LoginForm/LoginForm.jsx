@@ -30,7 +30,7 @@ function LoginForm(props) {
                 if(!('error' in response.data)){
                     NotificationManager.success("Login sucessfull.", 'info');
                     localStorage.setItem(ACCESS_TOKEN_NAME,response.data.access_token);
-                    redirectToHome();                   
+                    window.location = "/home"                 
                 } else{
                     NotificationManager.warning(response.data['error'], 'info');
                 }
@@ -40,16 +40,13 @@ function LoginForm(props) {
             }); 
        
     }
-    const redirectToHome = () => {
-        props.updateTitle('Home')
-        props.history.push('/home');
-    }
+    
     const redirectToRegister = () => {
         props.history.push('/register'); 
         props.updateTitle('Register');
     }
     return(
-        <div className="card col-12 col-lg-4 login-card mt-2 hv-center">
+        <div >
             <form>
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">Email address</label>
@@ -75,19 +72,16 @@ function LoginForm(props) {
                 </div>
                 <div className="form-check">
                 </div>
-                <button 
+                <button id="login_id"
                     type="submit" 
-                    className="btn btn-primary"
+                    className="btn"
                     onClick={handleSubmitClick}
-                >Submit</button>
+                >Login</button>
             </form>
             <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
                 {state.successMessage}
             </div>
-            <div className="registerMessage">
-                <span>Dont have an account? </span>
-                <span className="loginText" onClick={() => redirectToRegister()}>Register</span> 
-            </div>
+            
             <NotificationContainer/>
         </div>
     )

@@ -5,3 +5,10 @@
 .registerMessage {
     margin-top: 10vh;
 }
+.notfound{
+    width:40vw;
+    height: 40vh;
+}
+button#login_id {
+    background: #f59c29;
+}
