@@ -109,9 +109,9 @@ function RegistrationForm(props) {
                         onChange={handleChange} 
                     />
                 </div>
-                <button 
+                <button id="submit_id"
                     type="submit" 
-                    className="btn btn-primary"
+                    className="btn"
                     onClick={handleSubmitClick}
                 >
                     Register

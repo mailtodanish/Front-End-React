@@ -12,19 +12,22 @@ class LandingPage extends Component {
         super(props);
         this.state = {
             showRegistration: false,
-            showLogin: true
+            showLogin: true,
+            active:false
         };
       }
     showRegistration =()=>{
         this.setState({
             showRegistration: true,
-            showLogin: false
+            showLogin: false,
+            active:true
           })
     }
     showLogin=()=>{
         this.setState({
             showRegistration: false,
-            showLogin: true
+            showLogin: true,
+            active:false
           })
     }
     render() {
@@ -33,8 +36,8 @@ class LandingPage extends Component {
                 <div class="header">
                     <a href="#default" class="square"></a>
                     <div class="header-right">
-                        <a className="btn" onClick={this.showRegistration}>Signup</a>
-                        <a className="btn" onClick={this.showLogin}>Login</a>
+                        <a className={this.state.active ? 'btn highlight': "btn"}  onClick={this.showRegistration}>Signup</a>
+                        <a className={this.state.active ? 'btn': "btn  highlight"} onClick={this.showLogin}>Login</a>
                        
                     </div>
                 </div>
