@@ -75,7 +75,7 @@ function RegistrationForm(props) {
         }
     }
     return(
-        <div >
+        <div className="reg_container card-body">
             <form>
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">Email address</label>

@@ -46,7 +46,7 @@ function LoginForm(props) {
         props.updateTitle('Register');
     }
     return(
-        <div >
+        <div className="card-body login_container">
             <form>
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">Email address</label>

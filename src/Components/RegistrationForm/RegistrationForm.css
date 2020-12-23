@@ -11,3 +11,6 @@
 #submit_id{
     background: #f59c29;
 }
+.reg_container{
+    box-shadow: 0 1px 15px 1px rgba(62,57,107,.07);
+}
