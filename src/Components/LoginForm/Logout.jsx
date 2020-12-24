@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import {ACCESS_TOKEN_NAME} from '../../Constant/apiConstants';
 
 export class Logout extends Component {

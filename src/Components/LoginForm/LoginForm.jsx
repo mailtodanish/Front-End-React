@@ -1,29 +1,37 @@
-import React, {useState} from 'react';
+
+import React, { Component } from 'react'
 import axios from 'axios';
 import './LoginForm.css';
 import {API_BASE_URL, ACCESS_TOKEN_NAME} from '../../Constant/apiConstants';
 import { withRouter } from "react-router-dom";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
-function LoginForm(props) {
-    const [state , setState] = useState({
-        email : "",
-        password : "",
-        successMessage: null
-    })
-    const handleChange = (e) => {
+
+export class LoginForm extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            email : "",
+            password : "",
+            successMessage: null,
+            
+        };
+    }
+    handleChange = (e) => {
         const {id , value} = e.target   
-        setState(prevState => ({
+        this.setState(prevState => ({
             ...prevState,
             [id] : value
         }))
     }
-
-    const handleSubmitClick = (e) => {
+    handleSubmitClick = (e) => {
+        this.setState({
+            successMessage: "Loading...",
+        });
         e.preventDefault();
         const payload={
-            "email":state.email,
-            "password":state.password,
+            "email":this.state.email,
+            "password":this.state.password,
         }
         axios.post(API_BASE_URL+'/auth/login', payload)
             .then(function (response) {
@@ -40,13 +48,9 @@ function LoginForm(props) {
             }); 
        
     }
-    
-    const redirectToRegister = () => {
-        props.history.push('/register'); 
-        props.updateTitle('Register');
-    }
-    return(
-        <div className="card-body login_container">
+    render() {
+        return (
+            <div className="card-body login_container">
             <form>
                 <div className="form-group text-left">
                 <label htmlFor="exampleInputEmail1">Email address</label>
@@ -55,8 +59,8 @@ function LoginForm(props) {
                        id="email" 
                        aria-describedby="emailHelp" 
                        placeholder="Enter email" 
-                       value={state.email}
-                       onChange={handleChange}
+                       value={this.state.email}
+                       onChange={this.handleChange}
                 />
                 <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
@@ -66,8 +70,8 @@ function LoginForm(props) {
                        className="form-control" 
                        id="password" 
                        placeholder="Password"
-                       value={state.password}
-                       onChange={handleChange} 
+                       value={this.state.password}
+                       onChange={this.handleChange} 
                 />
                 </div>
                 <div className="form-check">
@@ -75,16 +79,17 @@ function LoginForm(props) {
                 <button id="login_id"
                     type="submit" 
                     className="btn"
-                    onClick={handleSubmitClick}
+                    onClick={this.handleSubmitClick}
                 >Login</button>
             </form>
-            <div className="alert alert-success mt-2" style={{display: state.successMessage ? 'block' : 'none' }} role="alert">
-                {state.successMessage}
+            <div className="alert alert-success mt-2" style={{display: this.state.successMessage ? 'block' : 'none' }} role="alert">
+                {this.state.successMessage}
             </div>
             
             <NotificationContainer/>
         </div>
-    )
+        )
+    }
 }
 
-export default withRouter(LoginForm);
+export default LoginForm

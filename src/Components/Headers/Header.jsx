@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from "react-router-dom";
-import { ACCESS_TOKEN_NAME } from '../../Constant/apiConstants';
 import './Header.css'
 import logout from '../svg/logout.svg'
 import settings from '../svg/settings.svg'
 import home from '../svg/home.svg'
+import { useLocation } from 'react-router-dom'
 
 
 function Header(props) {
-
-
+    const location = useLocation();
+    console.log("test",location.pathname);
 
     return (
-        <div class="header">
-            <a href="#default" class="square"></a>
-            <div class="header-right">
+        <div className="header-NonLandingPage">
+            <a href="#default" className="square"></a>
+            <div className="header-right">
             <NavLink className="nav-link" to="/home">
                     <img src={home}></img>
                 </NavLink>

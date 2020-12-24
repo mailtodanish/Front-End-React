@@ -1,4 +1,26 @@
 .main{
     position: relative;
     top: 100px;
+    margin:10px;
+}
+button{
+    background: #f59c29;
+}
+.left-panel{
+    background-color: #e9ecef;
+    justify-content: center;
+    height: 100vh;
+    box-shadow: 1px 0 30px rgba(0,0,0,.1);
+}
+.icon{
+    width: auto;
+    height: 6vh;
+    margin: 10px;
+    opacity: .6;
+    
+    box-shadow: 10px 5px 30px rgba(0,0,0,.1);
+}
+
+.activeIcon{
+    background: #f59c292e;
 }
