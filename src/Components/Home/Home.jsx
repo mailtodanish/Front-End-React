@@ -1,33 +1,27 @@
 import React, { Component } from 'react'
-import MyEditor from '../Common/MyEditor'
+
 import Header from '../Headers/Header'
 import './Home.css'
-import add from '../svg/add.svg'
+import home from '../svg/home.svg'
 import tag from '../svg/tag.svg'
 import report from '../svg/report.svg'
+import Tags from '../Tags/Tags'
+import Report from '../Report/Report'
+import Select from 'react-select';
+import Notes from '../Notes/Notes'
 
 class Home extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            value: '',
             add: true,
             tag: false,
             report:false,
         };
     }
-    addMyNote = () => {
-        if (this.state.value) {
-            console.log(this.state.value);
-        }
-
-    }
-    textAreaUpdate = (e) => {
-        this.setState({
-            value: e.target.value,
-        });
-    }
+   
+    
     addIconClicked = () => {
         this.setState({
             add: true,
@@ -57,7 +51,7 @@ class Home extends Component {
                     <div className="row">
                         <div className="col-1 left-panel">
                             <a className={this.state.add ? "btn activeIcon" : "btn"} onClick={this.addIconClicked}>
-                                <img className="icon" src={add}></img>
+                                <img className="icon" src={home}></img>
                             </a>
                             <a className={this.state.tag ? "btn activeIcon" : "btn"} onClick={this.tagIconClicked}>
                                 <img className="icon" src={tag}></img>
@@ -68,18 +62,13 @@ class Home extends Component {
                         </div>
                         <div className="col-10">
                             {this.state.add && <div>
-                                <MyEditor onChange={this.textAreaUpdate}
-                                    value={this.state.value} />
-                                <div className="row">
-                                    <div class="col">
-                                        <button
-                                            className="btn float-right mr-2 mt-3"
-                                            onClick={this.addMyNote}>Add</button>
-                                    </div>
-                                </div>
+                                <Notes></Notes>
                             </div>}
                             {this.state.tag && <div>
-                                {/* <tags></tags> */}
+                               <Tags></Tags>
+                            </div>}
+                            {this.state.report && <div>
+                               <Report></Report>
                             </div>}
                         </div>
                     </div>
