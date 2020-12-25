@@ -19,7 +19,7 @@ export class Notes extends Component {
             characterCounter: 0,
         };
 
-        this.getAllTag();
+        
 
     }
     getAllNotes = () => {
@@ -154,12 +154,15 @@ export class Notes extends Component {
     handleChange = selectedOption => {
         this.setState(
             { selectedOption },
-            () => console.log(`Option selected:`, this.state.selectedOption.value)
+            () => this.getAllNotes()
         );
        
     };
-    render() {
-        {this.state.selectedOption && this.getAllNotes();}
+    componentWillMount(){
+       
+        this.getAllTag();
+      }
+    render() {        
         return (
             <div>
                 <h5>Select Tag:</h5>

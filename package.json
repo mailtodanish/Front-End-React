@@ -17,6 +17,7 @@
     "draft-js-sticker-plugin": "^2.0.4",
     "moment": "^2.29.1",
     "react": "^17.0.1",
+    "react-bootstrap-sweetalert": "^5.2.0",
     "react-dom": "^17.0.1",
     "react-icons": "^4.1.0",
     "react-loader-spinner": "^3.1.14",
