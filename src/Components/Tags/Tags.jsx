@@ -105,6 +105,29 @@ export class Tags extends Component {
                 console.log(error);
             });
     }
+    deleteTag(id){
+        // Delete Tag
+        var self = this;
+
+        const token = localStorage.getItem(ACCESS_TOKEN_NAME);
+
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        axios.delete(API_BASE_URL + `/tags/?id=${id}`, config)
+            .then(function (response) {
+                if (!('error' in response.data)) {
+                    NotificationManager.success("Tag deleted.", 'info');    
+                                  
+
+                } else {
+                    NotificationManager.warning(response.data['error'], 'info');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     render() {
         return (
@@ -160,8 +183,8 @@ export class Tags extends Component {
                                         </td>
                                         <td>
                                             
-                                            <a className={this.state.table ? "btn TagsactiveIcon" : "btn"} onClick={this.homeIconClicked}>
-                                                <img className="Tagsicon" src={edit}></img>
+                                            <a className={this.state.table ? "btn TagsactiveIcon" : "btn"} onClick={()=>this.deleteTag(row.id)}>
+                                                <img className="Tagsicon" src={trash}></img>
                                             </a>
                                         </td>
                                     </tr>

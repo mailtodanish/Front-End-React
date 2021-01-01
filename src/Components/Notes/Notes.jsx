@@ -20,6 +20,7 @@ export class Notes extends Component {
             selectedOption: null,
             noteRow: [],
             open: false,
+            dialogbody: '',
 
         };
 
@@ -87,111 +88,124 @@ export class Notes extends Component {
                 console.log(error);
             });
     }
-    togglePopup() {
-        console.log(this.state.open);
-        this.setState({
-            open: !this.state.open
-        });
-    }
-
-    deleteNote = (id) => {
-        var self = this;
-        self.setState({
-            successMessage: "Loading...",
-        });
-
-        const token = localStorage.getItem(ACCESS_TOKEN_NAME);
-
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-
-        axios.delete(API_BASE_URL + `/note/?id=${id}`, config)
-            .then(function (response) {
-                if (!('error' in response.data)) {
-                    self.getAllNotes();
-                    NotificationManager.warning('Note deleted.', 'info');
-                } else {
-                    NotificationManager.warning(response.data['error'], 'info');
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
+    togglePopup(content, id) {
+        if (id) {
+            this.setState({
+                open: !this.state.open,
+                dialogbody: content,
+                dialogbodyid: id
             });
+        }
+        else {
+
+            this.setState({
+                open: !this.state.open
+
+            });
+            this.getAllNotes();
+
+
+        }
     }
 
-    handleChange = selectedOption => {
-        this.setState(
-            { selectedOption },
-            () => this.getAllNotes()
-        );
+        deleteNote = (id) => {
+            var self = this;
+            self.setState({
+                successMessage: "Loading...",
+            });
 
-    };
-    componentWillMount() {
+            const token = localStorage.getItem(ACCESS_TOKEN_NAME);
 
-        this.getAllTag();
-    }
-    render() {
-        return (
-            <div>
-                <h5>Select Tag:</h5>
-                <Select autoFocus isSearchable
-                    placeholder='Select Tag...'
-                    value={this.state.selectedOption}
-                    onChange={this.handleChange}
-                    options={this.state.options}
-                />
-                <hr />
-                { this.state.selectedOption && <div>
-                    <h5>Add Note:</h5>
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
 
-                    <MyEditor
-                        textAreaUpdate={this.textAreaUpdate}
-                        selectedTag={this.state.selectedOption.value}
-                        notification_svc={this.state.notification_svc}
-                        getAllNotes={this.getAllNotes}
+            axios.delete(API_BASE_URL + `/note/?id=${id}`, config)
+                .then(function (response) {
+                    if (!('error' in response.data)) {
+                        self.getAllNotes();
+                        NotificationManager.warning('Note deleted.', 'info');
+                    } else {
+                        NotificationManager.warning(response.data['error'], 'info');
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        handleChange = selectedOption => {
+            this.setState(
+                { selectedOption },
+                () => this.getAllNotes()
+            );
+
+        };
+        componentWillMount() {
+
+            this.getAllTag();
+        }
+        render() {
+            return (
+                <div>
+                    <h5>Select Tag:</h5>
+                    <Select autoFocus isSearchable
+                        placeholder='Select Tag...'
+                        value={this.state.selectedOption}
+                        onChange={this.handleChange}
+                        options={this.state.options}
                     />
+                    <hr />
+                    { this.state.selectedOption && <div>
+                        <h5>Add Note:</h5>
 
-                    <hr></hr>
-                    <table class="table">
-                        <thead class="thead-light">
-                            <tr class="d-flex">
-                                <th scope="col" class="col-1">#Id</th>
-                                <th scope="col" class="col-7">Detail</th>
-                                <th scope="col" class="col-2">Created</th>
-                                <th scope="col" class="col-2">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <React.Fragment>
-                                {this.state.noteRow.map(row => (
-                                    <tr key={row.id} class="d-flex">
-                                        <td class="col-1">{row.id}</td>
-                                        <td class="col-7">{row.detail}</td>
-                                        <td class="col-2">
-                                            <Moment unix>
-                                                {row.created_ts}
-                                            </Moment>
-                                        </td>
-                                        <td class="col-2">
-                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={() => this.deleteNote(row.id)}>
-                                                <img className="Tagsicon" src={trash}></img>
-                                            </a>
-                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={this.togglePopup}>
-                                                <img className="Tagsicon" src={edit}></img>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </React.Fragment>
-                        </tbody>
-                    </table>
-                </div>}
-                <NotificationContainer />
-                {this.state.open && <ModalEditor show={this.state.open} parentAction={this.togglePopup}></ModalEditor>}
-            </div>
-        )
+                        <MyEditor
+                            textAreaUpdate={this.textAreaUpdate}
+                            selectedTag={this.state.selectedOption.value}
+                            notification_svc={this.state.notification_svc}
+                            getAllNotes={this.getAllNotes}
+                        />
+
+                        <hr></hr>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr class="d-flex">
+                                    <th scope="col" class="col-1">#Id</th>
+                                    <th scope="col" class="col-7">Detail</th>
+                                    <th scope="col" class="col-2">Created</th>
+                                    <th scope="col" class="col-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <React.Fragment>
+                                    {this.state.noteRow.map(row => (
+                                        <tr key={row.id} class="d-flex">
+                                            <td class="col-1">{row.id}</td>
+                                            <td class="col-7">{row.detail}</td>
+                                            <td class="col-2">
+                                                <Moment unix>
+                                                    {row.created_ts}
+                                                </Moment>
+                                            </td>
+                                            <td class="col-2">
+                                                <a classNamed={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={() => this.deleteNote(row.id)}>
+                                                    <img className="Tagsicon" src={trash}></img>
+                                                </a>
+                                                <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={() => this.togglePopup(row.content, row.id)}>
+                                                    <img className="Tagsicon" src={edit}></img>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </React.Fragment>
+                            </tbody>
+                        </table>
+                    </div>}
+                    <NotificationContainer />
+                    {this.state.open && <ModalEditor show={this.state.open} body={this.state.dialogbody} note_id={this.state.dialogbodyid} refresh_record={this.getAllNotes} parentAction={() => this.togglePopup('', '')}></ModalEditor>}
+                </div>
+            )
+        }
     }
-}
 
-export default Notes
+    export default Notes

@@ -25,6 +25,7 @@ export class LoginForm extends Component {
         }))
     }
     handleSubmitClick = (e) => {
+        var self=this;
         this.setState({
             successMessage: "Loading...",
         });
@@ -39,8 +40,15 @@ export class LoginForm extends Component {
                     NotificationManager.success("Login sucessfull.", 'info');
                     localStorage.setItem(ACCESS_TOKEN_NAME,response.data.access_token);
                     window.location = "/home"                 
-                } else{
+                } else{  
+                    self.setState({
+                        successMessage: "",
+                    });                  
                     NotificationManager.warning(response.data['error'], 'info');
+                    this.setState({
+            successMessage: "Loading...",
+        });
+                    
                 }
             })
             .catch(function (error) {

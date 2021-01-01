@@ -1,7 +1,7 @@
 import React from 'react';
 import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js'
 import './editorStyles.css'
-import { NotificationContainer} from 'react-notifications'; 
+import { NotificationContainer } from 'react-notifications';
 import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../Constant/apiConstants';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
@@ -10,9 +10,18 @@ export default class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
       characterCounter: 0,
     };
+    if (props.content) {
+      console.log("content :", props.content);
+      this.state.editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(props.content)));
+    } else {
+      this.state.editorState = EditorState.createEmpty();
+    }
+    if (props.note_id) {
+      // used for record update
+      this.state.id = props.note_id;
+    }
 
     this.focus = () => this.refs.editor.focus();
     this.onChange = (editorState) => {
@@ -39,47 +48,82 @@ export default class MyEditor extends React.Component {
     const savedData = localStorage.getItem('editorData');
     return savedData ? JSON.parse(savedData) : null;
   }
-  
+  apiInvokeupdateNote = (id) => {
+    var self = this;
+    if (this.state.detail) {
+
+      const token = localStorage.getItem(ACCESS_TOKEN_NAME);
+
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      const payload = {
+        "detail": this.state.detail,
+        "content": this.state.content,
+        "id": this.state.id
+      }
+
+      axios.put(API_BASE_URL + '/note/', payload, config)
+        .then(function (response) {
+          console.log(response.data);
+          if (!('error' in response.data)) {
+            NotificationManager.info('Note updated.', 'info');
+            
+
+          } else {
+            NotificationManager.warning(response.data['error'], 'info');
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    else {
+      NotificationManager.warning("Detail cant be blank.", 'info');
+    }
+
+  }
+
   apiInvokeAddNote = () => {
     var self = this;
     if (this.state.detail) {
 
-        const token = localStorage.getItem(ACCESS_TOKEN_NAME);
+      const token = localStorage.getItem(ACCESS_TOKEN_NAME);
 
-        const config = {
-            headers: { Authorization: `Bearer ${token}` }
-        };
-        const payload = {
-            "detail": this.state.detail,
-            "content":this.state.content,
-            "tag_id": this.props.selectedTag
-        }
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      const payload = {
+        "detail": this.state.detail,
+        "content": this.state.content,
+        "tag_id": this.props.selectedTag
+      }
 
-        axios.post(API_BASE_URL + '/note/', payload, config)
-            .then(function (response) {
-                console.log(response.data);
-                if (!('error' in response.data)) {
-                  self.setState({
-                    editorState: EditorState.createEmpty(),
-                  });
-                 
-                  self.props.getAllNotes();
-                    NotificationManager.info('Note created.', 'info');
-                    
-
-                } else {
-                    NotificationManager.warning(response.data['error'], 'info');
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
+      axios.post(API_BASE_URL + '/note/', payload, config)
+        .then(function (response) {
+          console.log(response.data);
+          if (!('error' in response.data)) {
+            self.setState({
+              editorState: EditorState.createEmpty(),
             });
+
+            self.props.getAllNotes();
+            NotificationManager.info('Note created.', 'info');
+
+
+          } else {
+            NotificationManager.warning(response.data['error'], 'info');
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
     else {
-        NotificationManager.warning("Detail cant be blank.", 'info');
+      NotificationManager.warning("Detail cant be blank.", 'info');
     }
 
-}
+  }
 
 
   renderContentAsRawJs() {
@@ -121,7 +165,7 @@ export default class MyEditor extends React.Component {
       )
     );
   }
-  
+
   render() {
     const { editorState } = this.state;
 
@@ -160,11 +204,16 @@ export default class MyEditor extends React.Component {
             />
             <pre>Remianing Words:{this.state.characterCounter}</pre>
             <div className="row">
-              <div class="col">
+              {!this.props.isupdate && <div class="col">
                 <button
                   className="btn float-right mr-2 mt-3"
                   onClick={this.apiInvokeAddNote}>Add</button>
-              </div>
+              </div>}
+              {this.props.isupdate && <div class="col">
+                <button
+                  className="btn float-right mr-2 mt-3"
+                  onClick={() => this.apiInvokeupdateNote()}>Update</button>
+              </div>}
             </div>
           </div>
 
@@ -261,20 +310,20 @@ const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
     <div>
-    <div className="RichEditor-controls">
-      {INLINE_STYLES.map(type =>
-        <StyleButton
-          key={type.label}
-          active={currentStyle.has(type.style)}
-          label={type.label}
-          onToggle={props.onToggle}
-          style={type.style}
-        />
-       
-      )}
-      
+      <div className="RichEditor-controls">
+        {INLINE_STYLES.map(type =>
+          <StyleButton
+            key={type.label}
+            active={currentStyle.has(type.style)}
+            label={type.label}
+            onToggle={props.onToggle}
+            style={type.style}
+          />
+
+        )}
+
+      </div>
+ 
     </div>
-    <NotificationContainer />
-        </div>
   );
 };
