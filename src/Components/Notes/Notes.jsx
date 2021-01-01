@@ -1,27 +1,36 @@
 import React, { Component } from 'react'
 import Select from 'react-select';
-import axios from 'axios';
 import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../Constant/apiConstants';
+import axios from 'axios';
+
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import MyEditor from '../Common/MyEditor'
 import Moment from 'react-moment';
 import trash from '../svg/trash.svg'
 import edit from '../svg/edit.svg'
 import './Notes.css'
+import ModalEditor from '../Common/ModalEditor';
 
 export class Notes extends Component {
     constructor(props) {
         super(props);
         this.state = {
             value: '',
+            content: '',
             selectedOption: null,
             noteRow: [],
-            characterCounter: 0,
+            open: false,
+
         };
 
-        
 
+        this.togglePopup = this.togglePopup.bind(this);
     }
+
+    notification_svc = (msg) => {
+        NotificationManager.warning(msg, 'info');
+    }
+
     getAllNotes = () => {
         var self = this;
         const token = localStorage.getItem(ACCESS_TOKEN_NAME);
@@ -78,18 +87,14 @@ export class Notes extends Component {
                 console.log(error);
             });
     }
-
-    textAreaUpdate = (e) => {
-        const charCount = e.target.value.length;
-        const charLeft = 245 - charCount;
-        if (charLeft > -1) {
-            this.setState({
-                value: e.target.value,
-                characterCounter: charLeft
-            });
-        }
+    togglePopup() {
+        console.log(this.state.open);
+        this.setState({
+            open: !this.state.open
+        });
     }
-    deleteNote =(id)=>{
+
+    deleteNote = (id) => {
         var self = this;
         self.setState({
             successMessage: "Loading...",
@@ -104,8 +109,8 @@ export class Notes extends Component {
         axios.delete(API_BASE_URL + `/note/?id=${id}`, config)
             .then(function (response) {
                 if (!('error' in response.data)) {
-                   //Delete Notification
-                   NotificationManager.warning('Note deleted.', 'info');
+                    self.getAllNotes();
+                    NotificationManager.warning('Note deleted.', 'info');
                 } else {
                     NotificationManager.warning(response.data['error'], 'info');
                 }
@@ -114,55 +119,19 @@ export class Notes extends Component {
                 console.log(error);
             });
     }
-    addMyNote = () => {
-        var self = this;
-        if (this.state.value) {
 
-            const token = localStorage.getItem(ACCESS_TOKEN_NAME);
-
-            const config = {
-                headers: { Authorization: `Bearer ${token}` }
-            };
-            const payload = {
-                "detail": this.state.value,
-                "tag_id": this.state.selectedOption.value
-            }
-
-            axios.post(API_BASE_URL + '/note/', payload, config)
-                .then(function (response) {
-                    console.log(response.data);
-                    if (!('error' in response.data)) {
-                        self.setState({
-                            value: '',
-                        });
-                        self.getAllNotes();
-                        NotificationManager.info('Note created.', 'info');
-
-                    } else {
-                        NotificationManager.warning(response.data['error'], 'info');
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
-        else {
-            NotificationManager.warning("Detail cant be blank.", 'info');
-        }
-
-    }
     handleChange = selectedOption => {
         this.setState(
             { selectedOption },
             () => this.getAllNotes()
         );
-       
+
     };
-    componentWillMount(){
-       
+    componentWillMount() {
+
         this.getAllTag();
-      }
-    render() {        
+    }
+    render() {
         return (
             <div>
                 <h5>Select Tag:</h5>
@@ -176,16 +145,13 @@ export class Notes extends Component {
                 { this.state.selectedOption && <div>
                     <h5>Add Note:</h5>
 
-                    <MyEditor onChange={this.textAreaUpdate}
-                    counter={this.state.characterCounter}
-                        value={this.state.value} />
-                    <div className="row">
-                        <div class="col">
-                            <button
-                                className="btn float-right mr-2 mt-3"
-                                onClick={this.addMyNote}>Add</button>
-                        </div>
-                    </div>
+                    <MyEditor
+                        textAreaUpdate={this.textAreaUpdate}
+                        selectedTag={this.state.selectedOption.value}
+                        notification_svc={this.state.notification_svc}
+                        getAllNotes={this.getAllNotes}
+                    />
+
                     <hr></hr>
                     <table class="table">
                         <thead class="thead-light">
@@ -200,7 +166,7 @@ export class Notes extends Component {
                             <React.Fragment>
                                 {this.state.noteRow.map(row => (
                                     <tr key={row.id} class="d-flex">
-                                        <td  class="col-1">{row.id}</td>
+                                        <td class="col-1">{row.id}</td>
                                         <td class="col-7">{row.detail}</td>
                                         <td class="col-2">
                                             <Moment unix>
@@ -208,10 +174,10 @@ export class Notes extends Component {
                                             </Moment>
                                         </td>
                                         <td class="col-2">
-                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={()=>this.deleteNote(row.id)}>
+                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={() => this.deleteNote(row.id)}>
                                                 <img className="Tagsicon" src={trash}></img>
                                             </a>
-                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={this.homeIconClicked}>
+                                            <a className={this.state.noteRow ? "btn TagsactiveIcon" : "btn"} onClick={this.togglePopup}>
                                                 <img className="Tagsicon" src={edit}></img>
                                             </a>
                                         </td>
@@ -222,7 +188,7 @@ export class Notes extends Component {
                     </table>
                 </div>}
                 <NotificationContainer />
-
+                {this.state.open && <ModalEditor show={this.state.open} parentAction={this.togglePopup}></ModalEditor>}
             </div>
         )
     }
