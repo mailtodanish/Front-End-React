@@ -10,6 +10,7 @@ import Report from '../Report/Report'
 import Select from 'react-select';
 import Notes from '../Notes/Notes'
 import todo from '../svg/to-do-list.svg'
+import Task from '../Task/Task'
 
 class Home extends Component {
 
@@ -86,6 +87,9 @@ class Home extends Component {
                             </div>}
                             {this.state.report && <div>
                                <Report></Report>
+                            </div>}
+                            {this.state.todo && <div>
+                               <Task></Task>
                             </div>}
                         </div>
                     </div>
