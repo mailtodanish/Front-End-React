@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './PwdReset.css'
 import axios from 'axios';
 import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../Constant/apiConstants';
-import { NotificationContainer, NotificationManager } from 'react-notifications'
+import { NotificationManager } from 'react-notifications'
 
 class PwdReset extends Component {
     constructor(props) {
@@ -87,7 +87,7 @@ class PwdReset extends Component {
                             onClick={this.resetPwd}>Reset</button>
                     </div>
                 </div>
-               
+
             </div>
         )
     }

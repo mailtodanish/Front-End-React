@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Header from '../Headers/Header'
 import PwdReset from '../PwdReset/PwdReset';
 import reset from '../svg/pwd_reset.svg'
-
+import 'react-notifications/lib/notifications.css';
 import './Settings.css'
 import { NotificationContainer, NotificationManager } from 'react-notifications'
 

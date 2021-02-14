@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useState } from 'react';
 import { Alert, Layout } from 'antd';
 import './App.css';
-import Header from './Components/Headers/Header';
 import {
   BrowserRouter as Router,
   Switch,
