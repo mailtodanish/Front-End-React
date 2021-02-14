@@ -5,6 +5,8 @@ import PwdReset from '../PwdReset/PwdReset';
 import reset from '../svg/pwd_reset.svg'
 
 import './Settings.css'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
+
 export class settings extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +52,7 @@ export class settings extends Component {
 
 
                 </div>
-
+                                <NotificationContainer/>
             </div>
         )
     }

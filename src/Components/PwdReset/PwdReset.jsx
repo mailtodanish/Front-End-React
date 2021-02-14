@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import './PwdReset.css'
 import axios from 'axios';
 import { ACCESS_TOKEN_NAME, API_BASE_URL } from '../../Constant/apiConstants';
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 
-export class PwdReset extends Component {
+class PwdReset extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,13 +35,16 @@ export class PwdReset extends Component {
             "conf_new_pw": this.state.confipwd
         }
         console.table(payload);
-        axios.post(API_BASE_URL + '/user/update/password/', payload, config)
+        axios.post(API_BASE_URL + '/user/update/password', payload, config)
             .then(function (response) {
+                console.log(response.data);
                 if (!('error' in response.data)) {
                     self.setState({
-                        tagValue: ""
+                        oldpwd: "",
+                        newpwd: "",
+                        confipwd: ""
                     });
-                    NotificationManager.success("Tag added.", 'info');
+                    NotificationManager.success("Pwd reset successful.", 'info');
 
                 } else {
                     NotificationManager.warning(response.data['error'], 'info');
@@ -70,7 +73,7 @@ export class PwdReset extends Component {
 
     render() {
         return (
-            <div >
+            <div>
                 <label>Old Password</label>
                 <input value={this.state.oldpwd} onChange={this.oldpwdOnChane} className="form-control" />
                 <label>New Password</label>
@@ -84,6 +87,7 @@ export class PwdReset extends Component {
                             onClick={this.resetPwd}>Reset</button>
                     </div>
                 </div>
+               
             </div>
         )
     }
